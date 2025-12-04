@@ -1,0 +1,149 @@
+************************************************** HL  GL code query ********************************************************************************
+SELECT * FROM Hl_Los.HL_FACT_FAS_TYEARTRANS_FULLDATA; -- 1
+SELECT * FROM Hl_Los.HL_FACT_LON_TINSTLDGRHDR_FULLDATA; -- 19,328,690
+SELECT * FROM Hl_Los.HL_FACT_FAS_TGLHEAD; --1,030
+SELECT * FROM Hl_Los.HL_FACT_FAS_TYEARTRANS_CLS_FULLDATA; -- 16,417,342
+
+Hl_Los.HL_FACT_FAS_TGLHEAD 
+DEVHFC02..FAS_TYEARTRANS-----------HL_FACT_FAS_TYEARTRANS_FULLDATA	
+DEVHFC02..LON_TINSTENT-------------HL_FACT_LON_TINSTLDGRHDR_FULLDATA
+DEVHFC02..FAS_TGLHEAD--------------HL_FACT_FAS_TGLHEAD
+DEVHFC02..FAS_TYEARTRANS_cls-------HL_FACT_FAS_TYEARTRANS_CLS_FULLDATA	
+ 
+SELECT 
+    A.Pk_Id,
+    B.TxnIDHdr  AS VOUCHERID,
+    B.BusnDt  AS VOUCHERDATE,
+    A.AvalDt  AS VALUEDATE,
+    A.BrID  AS BRANCHID,
+    A.ORCPROPOSALID  AS PROPOSALID,
+    A.BRSRECONACCTID  AS AGREEMENTNO,
+    A.GLHeadID ,
+    C.HeadName  AS GL_DESCRIPTION,
+    A.DrAmt ,
+    A.CrAmt ,
+    A.Narration ,
+    A.INVGSTNNO ,
+    A.InitFrom ,
+    A.GL_RECEIPTNO ,
+    A.CHEQUENO ,
+    A.FCHEQID ,
+    A.VchType 
+FROM Hl_Los.HL_FACT_FAS_TYEARTRANS_FULLDATA A
+LEFT JOIN Hl_Los.HL_FACT_LON_TINSTLDGRHDR_FULLDATA B
+    ON A.BRSRECONACCTID = B.AcctID 
+LEFT JOIN Hl_Los.HL_FACT_FAS_TGLHEAD C
+    ON A.GLHeadID  = C.GLHeadId
+WHERE 
+    (A.CrAmt  <> 0 OR A.DrAmt  <> 0)
+    AND A.BrID  <> '001'
+    AND A.GLHeadID  IN ('301011', '301001', '405002', '405001', '405101', '405102')
+UNION ALL
+   SELECT
+    A.Pk_Id,
+    A.TxnIdHdr AS VOUCHERID,
+    A.BusnsDt AS VOUCHERDATE,
+    A.AvalDt AS VALUEDzATE,
+    A.BrID AS BRANCHID,
+    A.ORCPROPOSALID AS PROPOSALID,
+    A.BRSRECONACCTID AS AGREEMENTNO,
+    A.GLHeadID,
+    C.HeadName AS GL_DESCRIPTION,
+    A.DrAmt,
+    A.CrAmt,
+    A.Narration,
+    A.INVGSTNNO,
+    A.InitFrom,
+    A.GL_RECEIPTNO,
+    A.CHEQUENO,
+    A.FCHEQID,
+    A.VchType
+FROM Hl_Los.HL_FACT_FAS_TYEARTRANS_CLS_FULLDATA A
+LEFT JOIN Hl_Los.HL_FACT_LON_TINSTLDGRHDR_FULLDATA B
+    ON A.BRSRECONACCTID = B.AcctID
+LEFT JOIN Hl_Los.HL_FACT_FAS_TGLHEAD C
+    ON A.GLHeadID = C.GLHeadId
+WHERE (A.CrAmt != 0 OR A.DrAmt != 0)
+  --AND A.BrID != '001'
+  AND A.GLHeadID IN ('301011','301001','405002','405001','405101','405102');
+============================================================================================
+
+DEVHFC02..FAS_TYEARTRANS-----------Hl_Los.HL_FACT_FAS_TYEARTRANS_FULLDATA	
+DEVHFC02..LON_TINSTENT-------------Hl_Los.HL_FACT_LON_TINSTLDGRHDR_FULLDATA
+DEVHFC02..FAS_TGLHEAD--------------Hl_Los.HL_FACT_FAS_TGLHEAD
+DEVHFC02..FAS_TYEARTRANS_cls-------Hl_Los.HL_FACT_FAS_TYEARTRANS_CLS_FULLDATA	
+ 
+************************************************* LAP ****************************************************************
+CHOLA_HE..LON_TINSTENT	----------LAP_FACT_AGREEMENT
+CHOLA_HE..FAS_TGLHEAD-------------FAS_TGLHEAD
+CHOLA_HE..FAS_TYEARTRANS----------FAS_TYEARTRANS
+CHOLA_HE..FAS_TYEARTRANS_CLS------FAS_TYEARTRANS_Cls
+
+select * from Lap.LAP_FACT_AGREEMENT; --190,044
+select * from Lap.FAS_TGLHEAD; -- 1,093
+select * from Lap.FAS_TYEARTRANS;-- 61,526,040
+select * from Lap.FAS_TYEARTRANS_Cls;--26,316,333
+
+SELECT
+    A.Pk_Id ,
+    A.TxnIdHdr  AS VOUCHERID,
+    A.BusnsDt  AS VOUCHERDATE,
+    A.AvalDt  AS VALUEDzATE,
+    A.BrID  AS BRANCHID,
+    B.ALTERACCT_ID  AS PROPOSALID,
+    A.BRSRECONACCTID  AS AGREEMENTNO,
+    A.GLHeadID ,
+    C.HeadName AS GL_DESCRIPTION,
+    A.DrAmt ,
+    A.CrAmt ,
+    A.Narration ,
+    A.INVGSTNNO ,
+    A.InitFrom ,
+    A.GL_RECEIPTNO ,
+    A.CHEQUENO ,
+    A.FCHEQID ,
+    A.VchType 
+FROM Lap.FAS_TYEARTRANS A
+INNER JOIN Lap.LAP_FACT_AGREEMENT B
+    ON A.BRSRECONACCTID  = B.AGREEMENT_ID
+INNER JOIN Lap.FAS_TGLHEAD C
+    ON A.GLHeadID  = C.GLHeadId 
+WHERE (A.CrAmt  <> 0 OR A.DrAmt  <> 0)
+  -- AND A.BrID  <> '001'
+  AND A.GLHeadID  IN ('301011', '301001', '405002', '405001', '405101', '405102');
+  --AND A.BRSRECONACCTID  IN (SELECT CHKE_VALUE FROM chke);
+union all
+ SELECT 
+    A.Pk_Id,
+    A.TxnIdHdr AS VOUCHERID,
+    A.BusnsDt AS VOUCHERDATE,
+    A.AvalDt AS VALUEDzATE,
+    A.BrID AS BRANCHID,
+    B.ALTERACCT_ID AS PROPOSALID,
+    A.BRSRECONACCTID AS AGREEMENTNO,
+    A.GLHeadID,
+    C.HeadName AS GL_DESCRIPTION,
+    A.DrAmt,
+    A.CrAmt,
+    A.Narration,
+    A.INVGSTNNO,
+    A.InitFrom,
+    A.GL_RECEIPTNO,
+    A.CHEQUENO,
+    A.FCHEQID,
+    A.VchType
+FROM Lap.FAS_TYEARTRANS_Cls A
+INNER JOIN Lap.LAP_FACT_AGREEMENT B 
+        ON A.BRSRECONACCTID = B.AGREEMENT_ID
+INNER JOIN Lap.FAS_TGLHEAD C 
+        ON A.GLHeadID = C.GLHeadId
+WHERE 
+    (A.CrAmt != 0 OR A.DrAmt != 0)
+   -- AND A.BrID != '001'
+    AND A.GLHeadID IN ('301011','301001','405002','405001','405101','405102');
+   -- AND A.BRSRECONACCTID IN (SELECT chke.* FROM chke);
+   ===========================================================================================
+CHOLA_HE..LON_TINSTENT	----------LAP_FACT_AGREEMENT
+CHOLA_HE..FAS_TGLHEAD-------------FAS_TGLHEAD
+CHOLA_HE..FAS_TYEARTRANS----------FAS_TYEARTRANS
+CHOLA_HE..FAS_TYEARTRANS_CLS------FAS_TYEARTRANS_Cls
